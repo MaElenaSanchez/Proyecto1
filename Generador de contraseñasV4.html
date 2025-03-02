@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Contraseñas Seguras</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('https://cdn.pixabay.com/photo/2015/09/18/20/01/coding-951923_1280.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            color: #1f2937;
+        }
+        .dark-mode {
+            background-image: url('https://cdn.pixabay.com/photo/2017/07/20/20/00/keyboard-2520037_1280.jpg');
+            color: #f3f4f6;
+        }
+        .bg-white, .dark-mode:bg-gray-800 {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        .btn-copy {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="bg-white dark-mode:bg-gray-800 p-6 rounded-lg shadow-lg max-w-lg w-full">
+        <h1 class="text-2xl font-bold mb-4 text-center">Generador de Contraseñas Seguras</h1>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-2" for="length">Longitud de la contraseña:</label>
+            <input type="number" id="length" class="w-full p-2 border border-gray-300 rounded-lg" min="8" value="16">
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-2">Tipos de caracteres:</label>
+            <label class="flex items-center mb-2"><input type="checkbox" id="uppercase" class="mr-2" checked> Mayúsculas</label>
+            <label class="flex items-center mb-2"><input type="checkbox" id="lowercase" class="mr-2" checked> Minúsculas</label>
+            <label class="flex items-center mb-2"><input type="checkbox" id="numbers" class="mr-2" checked> Números</label>
+            <label class="flex items-center mb-2"><input type="checkbox" id="special" class="mr-2" checked> Caracteres especiales</label>
+        </div>
+        <button id="generate" class="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-300">Generar Contraseña</button>
+        <div id="result" class="mt-4 p-2 bg-gray-100 rounded-lg text-center"></div>
+        <button id="copy" class="w-full bg-gray-500 text-white p-2 rounded-lg hover:bg-gray-600 transition duration-300 mt-2 btn-copy" style="display: none;">Copiar Contraseña</button>
+    </div>
+    <script>
+        const generateBtn = document.getElementById('generate');
+        const result = document.getElementById('result');
+        const copyBtn = document.getElementById('copy');
+        
+        const getRandomInt = (max) => Math.floor(Math.random() * max);
+        
+        const generatePassword = (length, includeUppercase, includeLowercase, includeNumbers, includeSpecial) => {
+            const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const lower = 'abcdefghijklmnopqrstuvwxyz';
+            const numbers = '0123456789';
+            const special = '!@#$%^&*()_+~`|}{[]:;?><,./-=';
+            let all = '';
+            if (includeUppercase) all += upper;
+            if (includeLowercase) all += lower;
+            if (includeNumbers) all += numbers;
+            if (includeSpecial) all += special;
+            if (!all) return '';
+            
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += all[getRandomInt(all.length)];
+            }
+            return password;
+        };
+        
+        generateBtn.addEventListener('click', () => {
+            const length = document.getElementById('length').value;
+            const includeUppercase = document.getElementById('uppercase').checked;
+            const includeLowercase = document.getElementById('lowercase').checked;
+            const includeNumbers = document.getElementById('numbers').checked;
+            const includeSpecial = document.getElementById('special').checked;
+            const password = generatePassword(length, includeUppercase, includeLowercase, includeNumbers, includeSpecial);
+            result.textContent = password;
+            copyBtn.style.display = 'block';
+        });
+        
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(result.textContent).then(() => {
+                alert('Contraseña copiada al portapapeles');
+            }).catch(err => {
+                alert('Error al copiar la contraseña');
+            });
+        });
+    </script>
+</body>
+</html>
